@@ -5,7 +5,7 @@ import { BsSearch } from "react-icons/bs";
 import { AuthContext } from '../context/AuthContext';
 
 const Header = () => {
-  const { user, logout } = useContext(AuthContext);  // Get user and logout from context
+  const { user, logout, loading } = useContext(AuthContext);  // Get user and logout from context
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -23,6 +23,14 @@ const Header = () => {
     fetchCategories();
   }, []);
 
+  // useEffect(() => {
+  //   if (!loading && !user) {
+  //     navigate('/login');
+  //   }
+  // }, [user, loading, navigate]);
+
+
+
   const handleSearch = () => {
     if (searchTerm.trim()) {
       navigate(`/product?search=${searchTerm}`);
@@ -34,7 +42,7 @@ const Header = () => {
       handleSearch();
     }
   };
-
+  if (loading) return <div>Loading...</div>;
   return (
     <>
       <header className="header-top-strip py-3">

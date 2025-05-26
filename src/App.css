@@ -279,10 +279,11 @@ border-top-right-radius: 10px;
 
 .product-card{
   padding: 15px;
-  background-color: white;
+  /* background-color: white; */
   border-radius: 10px;
   overflow: hidden;
   width: 100%;
+  border: none;
 
 }
 .product-card:hover .action-bar{

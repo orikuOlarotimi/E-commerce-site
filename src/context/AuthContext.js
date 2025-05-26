@@ -10,11 +10,13 @@ export const  AuthContext = React.createContext({})
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [cookies, removeCookie] = useCookies([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const verifyCookie = async () => {
       if (!cookies.token) {
         setUser(null);  // Clear user if no token
+        setLoading(false);
         return;
       }
       try {
@@ -25,8 +27,10 @@ export const AuthProvider = ({ children }) => {
         );
         const { status, user } = data;
         if (status) {
-          setUser(user);
-          toast(`Hello ${user}`, { position: "top-right" });
+          const fullUserRes = await axios.get(`http://localhost:5000/api/users/user/${user._id}`);
+          console.log(fullUserRes)
+          setUser(fullUserRes.data);
+          toast(`Welcome ${fullUserRes.data.username}`, { position: "top-right" });
         } else {
           removeCookie("token");
           setUser(null);
@@ -34,6 +38,9 @@ export const AuthProvider = ({ children }) => {
       } catch (error) {
         removeCookie("token");
         setUser(null);
+      }
+      finally {
+        setLoading(false);
       }
     };
     verifyCookie();
@@ -54,8 +61,8 @@ export const AuthProvider = ({ children }) => {
 
   // expose setUser so components can update user (e.g., on login)
   return (
-    <AuthContext.Provider value={{ user, setUser, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, setUser, logout, loading }}>
+    {!loading ? children : <div>Checking login status...</div>}
     </AuthContext.Provider>
   );
 };

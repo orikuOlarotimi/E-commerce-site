@@ -59,9 +59,11 @@ const Wishlist = () => {
         withCredentials: true,
       });
       toast.success('Removed from wishlist');
+      console.log('success')
       setWishlistItems((prev) => prev.filter(item => item._id !== productId));
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to remove from wishlist');
+      console.log(error)
     }
   };
 

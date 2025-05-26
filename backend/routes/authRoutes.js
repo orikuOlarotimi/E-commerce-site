@@ -5,7 +5,7 @@ const { createOrder } = require('../controller/orderController');
 const authMiddleware = require('../middleware/authMiddleware')
 
  const {addToWishlist, getWishlist,removeFromWishlist} =  require('../controller/wishlistController')
-const { signupUser, loginUser, logoutUser } = require('../controller/authController');
+const { signupUser, loginUser, logoutUser, getUserById } = require('../controller/authController');
 
 const { getCategoriesWithInfo, getFeaturedProducts, getSingleProduct, getFamousProducts,
   getSpecialProducts, getTopRatedByCategory,getAllProducts
@@ -14,11 +14,10 @@ const { getCategoriesWithInfo, getFeaturedProducts, getSingleProduct, getFamousP
 
 const { getCart, addToCart, removeFromCart, updateCartItem } = require('../controller/cartController');
 
-router.post('/auth-status', authMiddleware, (req, res) => {
+  router.post('/auth-status', authMiddleware, (req, res) =>
+      {
         res.json({ status: true, user: req.user });
       });
-
-
       router.post('/', authMiddleware, createOrder);
 
           
@@ -49,6 +48,7 @@ router.post('/add-wishlist',authMiddleware, addToWishlist);
 router.get('/get-wishlist',authMiddleware,  getWishlist);
 router.delete('/remove-wishlist/:id', authMiddleware, removeFromWishlist);
 
+router.get('/user/:id', getUserById);
 router.get('/:id', getSingleProduct);
 
 
