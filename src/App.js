@@ -22,6 +22,8 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import SingleProduct from './pages/SingleProduct';
 import { Toaster } from 'react-hot-toast';
 import Checkout from "./pages/Checkout";
+import Payment from "./pages/Payment";
+
 
 function App() {
   return (
@@ -41,6 +43,7 @@ function App() {
             <Route path="compare-product" element={<CompareProduct />} />
             <Route path="wishlist" element={<Wishlist />} />
             <Route path="checkout" element={<Checkout />} />
+            <Route path="payment" element={<Payment />} />
             <Route path="login" element={<Login />} />
             <Route path="forgot-password" element={<Forgotpassword />} />
             <Route path="signup" element={<Signup />} />

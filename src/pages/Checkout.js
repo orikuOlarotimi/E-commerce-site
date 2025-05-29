@@ -48,9 +48,23 @@ const Checkout = () => {
     setShippingData({ ...shippingData, [e.target.name]: e.target.value });
   };
 
-  const handleContinue = () => {
-    localStorage.setItem("shipping", JSON.stringify(shippingData));
-    navigate("/payment");
+  const handleSubmit = (e) => {
+    e.preventDefault(); // prevent page reload
+    console.log("handleSubmit called, shippingData:", shippingData);
+  
+    // Optional validation
+    const {
+      firstName, lastName, address, city, state, zip, country, apartment
+    } = shippingData;
+  
+    if (!firstName || !lastName || !address || !city || !state || !zip || !country || !apartment) {
+      alert("Please fill all required fields.");
+      return;
+    }
+  
+    // Navigate to payment page and pass shippingData
+    navigate("/payment", { state: { shippingData } });
+    console.log("handleSubmit called");
   };
 
   return (
@@ -82,7 +96,7 @@ const Checkout = () => {
             <p className="user-details total">Your Account Email</p>
 
             <h4 className="mb-3">Shipping Address</h4>
-            <form className="d-flex gap-15 flex-wrap justify-content-between">
+            <form className="d-flex gap-15 flex-wrap justify-content-between" onSubmit={handleSubmit}>
               <div className="w-100">
                 <select
                   name="country"
@@ -175,9 +189,9 @@ const Checkout = () => {
                     <BiArrowBack className="me-2" />
                     Return to Cart
                   </Link>
-                  <button type="button" className="button" onClick={handleContinue}>
-                    Continue to Shipping
-                  </button>
+                    <button type="submit"  className="button">
+                      Continue to Shipping
+                    </button>
                 </div>
               </div>
             </form>
