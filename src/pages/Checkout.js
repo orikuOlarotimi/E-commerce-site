@@ -51,6 +51,7 @@ const Checkout = () => {
   const handleSubmit = (e) => {
     e.preventDefault(); // prevent page reload
     console.log("handleSubmit called, shippingData:", shippingData);
+    console.log(cartItems)
   
     // Optional validation
     const {
@@ -63,7 +64,7 @@ const Checkout = () => {
     }
   
     // Navigate to payment page and pass shippingData
-    navigate("/payment", { state: { shippingData } });
+    navigate("/payment", { state: { shippingData, cartItems, subtotal } });
     console.log("handleSubmit called");
   };
 

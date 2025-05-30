@@ -11,15 +11,20 @@ const createOrder = async (req, res) => {
       contactEmail,
       totalAmount,
       shippingFee,
+      paymentStatus,
+      paidAt,
+      user, // coming from frontend
     } = req.body;
 
     const order = new Order({
-      user: req.user._id,
+      user, // or req.user._id if you're using middleware
       products,
       shippingInfo,
       contactEmail,
       totalAmount,
       shippingFee,
+      paymentStatus,
+      paidAt,
     });
 
     const savedOrder = await order.save();
