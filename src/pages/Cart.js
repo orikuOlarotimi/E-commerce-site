@@ -1,14 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import BreadCrumb from "../components/BreadCrumb";
 import Meta from "../components/Meta";
 import { AiFillDelete } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import Container from "../components/Container";
+import { AuthContext } from '../context/AuthContext';
 import { getCart, removeFromCart, updateCartQuantity } from "../services/cartService";
+import {  useNavigate } from "react-router-dom";
+
 
 const Cart = () => {
+  const { user } = useContext(AuthContext);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      if (!user) {
+        navigate("/login");
+      }
+    }, [user]);
 
   useEffect(() => {
     fetchCart();

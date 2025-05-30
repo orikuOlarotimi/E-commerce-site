@@ -1,23 +1,25 @@
 // routes/authRoutes.js
 const express = require('express');
 const router = express.Router();
-const { createOrder } = require('../controller/orderController');
+const { createOrder,getUserOrders } = require('../controller/orderController');
 const authMiddleware = require('../middleware/authMiddleware')
 
- const {addToWishlist, getWishlist,removeFromWishlist} =  require('../controller/wishlistController')
+const {addToWishlist, getWishlist,removeFromWishlist} =  require('../controller/wishlistController')
 const { signupUser, loginUser, logoutUser, getUserById } = require('../controller/authController');
 
 const { getCategoriesWithInfo, getFeaturedProducts, getSingleProduct, getFamousProducts,
-  getSpecialProducts, getTopRatedByCategory,getAllProducts
+        getSpecialProducts, getTopRatedByCategory,getAllProducts
        } = require('../controller/productController');
 
 
 const { getCart, addToCart, removeFromCart, updateCartItem } = require('../controller/cartController');
 
-  router.post('/auth-status', authMiddleware, (req, res) =>
+      router.post('/auth-status', authMiddleware, (req, res) =>
       {
         res.json({ status: true, user: req.user });
       });
+
+      router.get("/my-orders", authMiddleware, getUserOrders);
       router.post('/', authMiddleware, createOrder);
 
           

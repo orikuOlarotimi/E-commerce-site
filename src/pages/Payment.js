@@ -10,8 +10,11 @@ const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { shippingData, cartItems, subtotal} = location.state || {};
- 
-  console.log( "mama:",user)
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user]);
 
   const [processing, setProcessing] = useState(false);
   const [success, setSuccess] = useState(false);

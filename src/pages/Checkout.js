@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import Container from "../components/Container";
 import axios from "axios";
+import { AuthContext } from '../context/AuthContext';
 
 const Checkout = () => {
+    const { user } = useContext(AuthContext);
   const [cartItems, setCartItems] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
   const [shippingData, setShippingData] = useState({
@@ -19,6 +21,11 @@ const Checkout = () => {
   });
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user]);
   useEffect(() => {
     const fetchCart = async () => {
       try {
