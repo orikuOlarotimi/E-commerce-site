@@ -37,7 +37,7 @@ app.use('/api/orders', orderRoutes);
 
 
 // Test route
-app.get('/', (req, res) => {
+app.get('/test', (req, res) => {
   res.send('API is running...');
 });
 
