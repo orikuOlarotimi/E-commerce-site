@@ -29,7 +29,7 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <Toaster position='buttom-right' toastOptions={{duration : 2000}} />
+        <Toaster position="buttom-right" toastOptions={{ duration: 2000 }} />
         <Routes>
           <Route path="/" element={<Layout></Layout>}>
             <Route index element={<Home></Home>}></Route>
@@ -44,6 +44,7 @@ function App() {
             <Route path="wishlist" element={<Wishlist />} />
             <Route path="checkout" element={<Checkout />} />
             <Route path="payment" element={<Payment />} />
+            <Route path="/reset-password" element={<Resetpassword />} />
             <Route path="login" element={<Login />} />
             <Route path="forgot-password" element={<Forgotpassword />} />
             <Route path="signup" element={<Signup />} />

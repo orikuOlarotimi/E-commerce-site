@@ -1,5 +1,5 @@
 // src/context/AuthContext.js
-import React, { useContext, createContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";

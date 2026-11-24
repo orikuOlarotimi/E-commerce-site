@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import Meta from '../components/Meta';
 import BreadCrumb from '../components/BreadCrumb';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
