@@ -61,68 +61,1712 @@ a{
 }
 
 /* Header part starts */
-.header-top-strip{
+/* ============================================================
+   HEADER (responsive) – replaces the old
+   "Header part starts ... Header part ends" block in your CSS
+   ============================================================ */
+
+.header-top-strip {
   border-bottom: 1px solid var(--color-3b4149);
   background-color: var(--color-131921);
 }
-.header-upper{
+.header-upper {
   background-color: var(--color-131921);
+}
+.header-bottom {
+  background-color: var(--color-232f3e);
+}
+.header-upper .input-group-text {
+  background-color: var(--color-febd69);
+  border: 0;
+}
+.header-logo {
+  font-size: 1.35rem;
+  white-space: nowrap;
+}
+@media (min-width: 992px) {
+  .header-logo { font-size: 1.75rem; }
+}
 
+/* icons */
+.header-upper .header-upper-links img {
+  width: 30px;
+  height: 30px;
 }
-.header-bottom{
-background-color: var(--color-232f3e);
+@media (min-width: 1200px) {
+  .header-upper .header-upper-links img { width: 35px; height: 35px; }
 }
-.header-upper .input-group-text{
-background-color: var(--color-febd69);
+.header-upper .header-upper-links p {
+  font-size: 13px;
+  line-height: 1.25;
 }
-.header-upper .header-upper-links img{
-  width: 35px;
-  height: 35px;
+
+/* buttons that should look like plain links/icons */
+.header-link-btn,
+.header-icon-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #fff;
+  cursor: pointer;
+  line-height: 1;
 }
-.header-bottom .menu-links a,.header-bottom .dropdown button{
+.header-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;   /* comfortable tap target */
+  min-height: 44px;
+}
+.header-icon-btn:focus-visible,
+.header-link-btn:focus-visible,
+.cat-toggle:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+
+/* cart badge sits on the icon so it works with or without text */
+.cart-icon-wrap {
+  position: relative;
+  display: inline-block;
+}
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 10px;
+}
+
+/* ---------- desktop bottom bar ---------- */
+.header-bottom .menu-links a {
   color: white;
   font-size: 14px;
   line-height: 18px;
   font-weight: 400;
-  letter-spacing: .3;
+  letter-spacing: 0.3px;
   text-transform: uppercase;
 }
-.header-bottom .dropdown button:focus{
-  box-shadow: none;
-  
+.header-bottom .menu-links a:hover,
+.header-bottom .menu-links a.active {
+  color: var(--color-febd69);
 }
-.header-bottom .dropdown-menu{
+
+.cat-dropdown {
+  position: relative;
+}
+.cat-toggle {
+  background: transparent;
+  border: 0;
+  color: white;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 0;
+}
+.cat-chevron {
+  transition: transform 0.2s ease;
+  font-size: 12px;
+}
+.cat-chevron.open {
+  transform: rotate(180deg);
+}
+.cat-menu {
+  position: absolute;
+  top: calc(100% + 16px);
+  left: 0;
+  min-width: 280px;
+  max-height: 70vh;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   background-color: var(--color-131921);
-  width: 100%;
-  transform: translate3d(0px, 57px, 0px) !important;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+  z-index: 1050;
 }
-.header-bottom .dropdown-item{
-  padding: 20px;
-  margin-bottom: 3px;
+.cat-item {
+  display: block;
+  width: 100%;
+  padding: 14px 20px;
+  color: white;
   border-bottom: 1px solid var(--color-3b4149);
 }
-.header-bottom .dropdown-item:hover{
-  background-color: transparent;
-  color: var(--color-febd69) !important;
+.cat-item:hover {
+  color: var(--color-febd69);
 }
+.cat-empty {
+  padding: 14px 20px;
+  color: var(--color-777777);
+  font-size: 14px;
+}
+
+/* ---------- mobile / tablet drawer ---------- */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+  z-index: 1060;
+}
+.drawer-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(320px, 85vw);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-131921);
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition: transform 0.28s ease, visibility 0.28s;
+  z-index: 1070;
+}
+.mobile-drawer.open {
+  transform: translateX(0);
+  visibility: visible;
+}
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px 8px 20px;
+  background-color: var(--color-232f3e);
+}
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+.drawer-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 20px;
+  color: white;
+  font-size: 15px;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.drawer-link.active,
+.drawer-link:hover {
+  color: var(--color-febd69);
+}
+.drawer-cats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.04);
+}
+.drawer-sublink {
+  display: block;
+  padding: 12px 20px 12px 36px;
+  color: #ddd;
+  font-size: 14px;
+}
+.drawer-sublink:hover {
+  color: var(--color-febd69);
+}
+.drawer-divider {
+  border-color: var(--color-3b4149);
+  opacity: 1;
+  margin: 8px 20px;
+}
+.drawer-foot {
+  padding: 16px 20px;
+  border-top: 1px solid var(--color-3b4149);
+  font-size: 13px;
+  color: #bbb;
+}
+.drawer-foot a {
+  color: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-drawer,
+  .drawer-overlay,
+  .cat-chevron { transition: none; }
+}
+
+/* iOS zooms into inputs under 16px – prevent that on phones */
+@media (max-width: 767.98px) {
+  .header-upper .form-control { font-size: 16px; }
+}
+
+/* ============ end header ============ */
 
 /* Header part ends  */
 
-/* footer part starts */
-footer{
-  background-color: var(--color-232f3e);
 
+/* footer part starts */
+/* ============================================================
+   FOOTER (responsive) – replaces the old
+   "footer part starts ... footer part ends here" block
+   ============================================================ */
+
+footer {
+  background-color: var(--color-232f3e);
 }
-footer:not(:first-child){
-  border-top: 1px solid rgba(255,255, 255,0.1);
+footer:not(:first-child) {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
-footer .input-group-text{
-  background-color: var(--color-232f3e) ;
+
+/* newsletter */
+.footer-newsletter-img {
+  width: 40px;
+  height: auto;
+  flex-shrink: 0;
+}
+.footer-newsletter-title {
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+.footer-msg {
+  font-size: 13px;
+}
+
+footer .input-group-text,
+.footer-subscribe {
+  background-color: var(--color-232f3e);
   color: white;
   padding: 8px 17px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+}
+.footer-subscribe:hover,
+.footer-subscribe:focus-visible {
+  background-color: var(--color-febd69);
+  color: var(--color-131921);
+  border-color: var(--color-febd69);
+}
+footer .form-control {
+  font-size: 16px; /* stops iOS zooming into the field */
+}
+footer .form-control:focus {
+  box-shadow: none;
 }
 
+/* columns */
+.footer-heading {
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+}
+footer address {
+  line-height: 1.6;
+}
+.footer-email {
+  word-break: break-all; /* long emails never overflow on small phones */
+}
+.footer-links a {
+  padding: 8px 0;   /* easy tap target */
+  font-size: 14px;
+  opacity: 0.9;
+}
+.footer-links a:hover,
+.footer-links a:focus-visible,
+footer .footer-social:hover svg {
+  color: var(--color-febd69) !important;
+  opacity: 1;
+}
+.footer-social {
+  display: inline-flex;
+  padding: 4px;
+}
+
+.footer-copy {
+  font-size: 13px;
+}
+
+/* tablet and up */
+@media (min-width: 768px) {
+  .footer-newsletter-img { width: 50px; }
+  .footer-newsletter-title { font-size: 1.4rem; }
+  .footer-heading { font-size: 1.15rem; }
+  .footer-links a { padding: 6px 0; }
+  .footer-copy { font-size: 14px; }
+}
+
+/* ============ end footer ============ */
+
 /* footer part ends here */
+
+/* ============================================================
+   HOME PAGE + CARDS (responsive)
+
+   BEFORE PASTING, delete these old blocks from your CSS:
+     1. .main-banner-content (all 4 rules) and .small-banner-content (all 4 rules)
+        and .small-banner { width: 49% }
+     2. The whole "categories section" block (.categories and every
+        .categories > div ... rule)
+     3. .special-product-content { width: 45% }
+     4. .action-bar, .wishlist-icon, and .product-card p.description
+   Then paste everything below at the END of your stylesheet.
+   ============================================================ */
+
+/* ---------- shared ---------- */
+.section-heading {
+  font-size: 20px;
+  line-height: 26px;
+  margin-bottom: 20px;
+}
+@media (min-width: 768px) {
+  .section-heading { font-size: 26px; line-height: 32px; margin-bottom: 30px; }
+}
+
+.icon-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  line-height: 0;
+  cursor: pointer;
+  display: inline-block;
+}
+.icon-btn:focus-visible,
+.product-link:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+
+/* welcome toast: don't run off the edge of a phone */
+.welcome-message {
+  left: 20px;
+  right: 20px;
+  text-align: center;
+}
+@media (min-width: 576px) {
+  .welcome-message { left: auto; text-align: left; }
+}
+
+/* ---------- hero banners ---------- */
+/* phones first (compact text so it fits on the image) */
+.main-banner-content {
+  top: 8%;
+  left: 6%;
+  right: 6%;
+}
+.main-banner-content h4 {
+  font-size: 11px;
+  line-height: 16px;
+  color: var(--color-bf4800);
+  margin: 0 0 4px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.main-banner-content h5 {
+  font-size: 22px;
+  line-height: 28px;
+  letter-spacing: -1px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.main-banner-content p {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--color-131921);
+  margin-bottom: 8px;
+}
+.main-banner-content .button {
+  padding: 8px 20px;
+  font-size: 12px;
+}
+
+.small-banner {
+  width: calc(50% - 5px);
+}
+.small-banner-content {
+  top: 10%;
+  left: 8%;
+  right: 4%;
+}
+.small-banner-content h4 {
+  font-size: 10px;
+  line-height: 14px;
+  color: var(--color-bf4800);
+  margin: 0 0 4px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.small-banner-content h5 {
+  font-size: 15px;
+  line-height: 20px;
+  letter-spacing: -0.5px;
+  font-weight: 500;
+}
+.small-banner-content p {
+  display: none; /* too tight on phones */
+}
+
+/* tablet and up: back toward your original sizes */
+@media (min-width: 576px) {
+  .main-banner-content { top: 12%; left: 5%; right: auto; }
+  .main-banner-content h4 { font-size: 14px; margin-bottom: 8px; }
+  .main-banner-content h5 { font-size: clamp(28px, 5vw, 42px); line-height: 1.2; letter-spacing: -2px; }
+  .main-banner-content p { font-size: 16px; line-height: 24px; margin-bottom: 16px; }
+  .main-banner-content .button { padding: 13px 33px; font-size: 14px; }
+
+  .small-banner { width: 49%; }
+  .small-banner-content { top: 20%; left: 10%; right: auto; }
+  .small-banner-content h4 { font-size: 12px; margin-bottom: 8px; }
+  .small-banner-content h5 { font-size: 20px; line-height: 28px; letter-spacing: -1px; }
+  .small-banner-content p { display: block; font-size: 13px; line-height: 20px; color: var(--color-131921); }
+}
+@media (min-width: 1200px) {
+  .small-banner-content h5 { font-size: 22px; line-height: 34px; letter-spacing: -2px; }
+  .small-banner-content p { font-size: 14px; line-height: 22px; }
+}
+
+/* ---------- services ---------- */
+.services img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.services h6 { font-size: 14px; }
+.services p { font-size: 13px; color: var(--color-777777); }
+
+/* ---------- categories ---------- */
+.categories {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  background-color: white;
+  box-shadow: 0 0 10px #0000001a;
+  border-radius: 10px;
+  overflow: hidden;
+}
+@media (min-width: 768px)  { .categories { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 992px)  { .categories { grid-template-columns: repeat(4, 1fr); } }
+
+.category-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 16px;
+  color: inherit;
+  /* divider lines that work for any number of items */
+  box-shadow: inset -1px -1px 0 var(--color-ededed);
+}
+.category-item h6 { font-size: 14px; margin-bottom: 2px; }
+.category-item p { font-size: 13px; margin: 0; color: var(--color-777777); }
+.category-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.category-item:hover h6 { color: var(--color-bf4800); }
+
+/* ---------- product card ---------- */
+.product-card {
+  display: block;
+  height: 100%;
+  padding: 10px;
+}
+@media (min-width: 768px) {
+  .product-card { padding: 15px; }
+}
+.product-link {
+  display: block;
+  color: inherit;
+}
+.product-card .product-image img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+.product-card .product-title,
+.product-card p.description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.product-card .product-title {
+  -webkit-line-clamp: 2;
+  min-height: 2.6em;
+}
+.product-card p.description {
+  -webkit-line-clamp: 2;
+  margin-right: 0;
+}
+.product-card .product-details p.price { margin-bottom: 0; }
+
+.wishlist-icon {
+  top: 8px;
+  right: 10px;
+  z-index: 2;
+}
+.action-bar {
+  top: 10%;
+  right: -45px;          /* hidden until hover on mouse devices */
+  transition: 0.4s;
+  z-index: 2;
+}
+.product-card:hover .action-bar,
+.product-card:focus-within .action-bar {
+  right: 12px;
+}
+.action-bar img,
+.wishlist-icon img {
+  width: 24px;
+  height: 24px;
+}
+/* touch screens can't hover, so always show the buttons */
+@media (hover: none) {
+  .action-bar { top: 44px; right: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .action-bar { transition: none; }
+}
+
+/* ---------- special discounts (famous) ---------- */
+.famous-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+}
+.famous-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+}
+.famous-card .famous-content { margin-top: 10px; }
+.famous-card .famous-content h5 { font-size: 13px; }
+.famous-card .famous-content h6 { font-size: 18px; line-height: 26px; }
+.famous-card .famous-content p { font-size: 15px; }
+
+/* ---------- special product ---------- */
+.special-product-image { display: block; width: 100%; max-width: 260px; }
+.special-product-image img { width: 100%; max-height: 260px; object-fit: contain; }
+.special-product-content { width: 100%; }
+@media (min-width: 576px) {
+  .special-product-image { width: 45%; max-width: none; flex-shrink: 0; }
+  .special-product-content { width: 55%; }
+}
+.special-product-content .brand { font-size: 13px; color: var(--color-bf4800); }
+.special-product-content .title { font-size: 15px; }
+.red-p { color: var(--color-bf4800); font-weight: 600; }
+.timer-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 600;
+}
+.prod-count p { font-size: 14px; margin-bottom: 6px; }
+
+/* ---------- brand marquee ---------- */
+.brand-item { width: 90px; }
+@media (min-width: 768px) { .brand-item { width: 130px; } }
+
+/* ---------- blog card ---------- */
+.Blog-card .card-image img {
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.blog-content p.desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ============ end home ============ */
+
+
+
+
+
+/* ============================================================
+   OUR STORE (responsive) + PRODUCT CARD LIST VIEW
+
+   BEFORE PASTING, delete these old rules from your CSS:
+     - .gr-12, .gr-6, .gr-4, .gr-3  (the fixed % widths)
+     - .gr-12 .product-card, .gr-6 .product-image, .gr-6 .product-image img,
+       .gr-12 .product-card .product-image (both copies), .gr-12 .action-bar
+     - .grid img  (replaced below)
+   Then paste this at the END of your stylesheet (after home.css).
+   ============================================================ */
+
+/* ---------- sidebar / mobile category filter ---------- */
+.filter-card {
+  padding: 12px 15px;
+}
+@media (min-width: 992px) {
+  .filter-card { padding: 15px 15px 25px; }
+  .filter-sticky { position: sticky; top: 20px; }
+}
+
+.filter-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 6px 0;
+  background: none;
+  border: 0;
+  text-align: left;
+}
+.filter-toggle:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+.filter-chevron { transition: transform 0.2s ease; }
+.filter-chevron.open { transform: rotate(180deg); }
+
+.filter-link {
+  display: block;
+  padding: 2px 0;
+  font-size: 13px;
+  line-height: 30px;
+  color: var(--color-777777);
+}
+.filter-link:hover { color: var(--color-bf4800); }
+.filter-link.active {
+  color: var(--color-1c1c1b);
+  font-weight: 600;
+}
+
+/* ---------- sort + view bar ---------- */
+.sort-box { flex: 1 1 220px; }
+.sort-box .form-select { min-width: 0; }
+.view-box { flex: 1 1 180px; }
+@media (min-width: 768px) {
+  .sort-box { flex: 0 1 auto; }
+  .view-box { flex: 0 0 auto; }
+}
+
+.grid .icon-btn img {
+  width: 35px;
+  height: 35px;
+  background-color: #f2f2f2;
+  padding: 8px;
+  border-radius: 3px;
+}
+.grid .icon-btn.active img {
+  background-color: var(--color-febd69);
+}
+.grid .icon-btn:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+
+/* ---------- product card: LIST VIEW (grid = 12) ---------- */
+.product-card--list .product-link {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+.product-card--list .product-image {
+  flex: 0 0 110px;
+  width: 110px;
+}
+.product-card--list .product-details {
+  flex: 1;
+  min-width: 0;            /* lets long text wrap instead of overflowing */
+  padding-right: 34px;     /* room for the wishlist / action icons */
+}
+.product-card--list .product-title { min-height: 0; }
+.product-card--list p.description {
+  -webkit-line-clamp: 2;
+}
+.product-card--list .action-bar { top: 44px; }
+
+@media (min-width: 576px) {
+  .product-card--list .product-link { gap: 20px; }
+  .product-card--list .product-image { flex-basis: 200px; width: 200px; }
+  .product-card--list p.description { -webkit-line-clamp: 3; }
+}
+@media (min-width: 992px) {
+  .product-card--list .product-image { flex-basis: 240px; width: 240px; }
+}
+
+/* ============ end store ============ */
+
+
+/* ============================================================
+   CART (responsive)
+
+   BEFORE PASTING, delete these old rules from your CSS:
+     .cart-header, .cart-data (the shared border rule),
+     .cart-col-1, .cart-col-1 p, .cart-col-2, .cart-col-3, .cart-col-4,
+     .cart-data h5.price, .cart-header h4
+   Then paste this at the END of your stylesheet.
+   ============================================================ */
+
+.cart-header {
+  border-bottom: 1px solid #eaeaea;
+}
+.cart-header h4 {
+  font-size: 13px;
+  color: var(--color-777777);
+}
+
+/* each product: a white card on phones, a ruled row on tablet and up */
+.cart-item {
+  background-color: white;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  transition: opacity 0.2s ease;
+}
+.cart-item.is-busy {
+  opacity: 0.6;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .cart-item {
+    background-color: transparent;
+    border-radius: 0;
+    border-bottom: 1px solid #eaeaea;
+    padding: 16px 0;
+    margin-bottom: 0;
+  }
+}
+
+.cart-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  background-color: white;
+  border-radius: 8px;
+}
+@media (min-width: 768px) {
+  .cart-thumb { width: 90px; height: 90px; }
+}
+.min-w-0 { min-width: 0; }   /* lets long titles wrap inside a flex row */
+
+.cart-title {
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0 0 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+.cart-meta {
+  font-size: 13px;
+  color: var(--color-777777);
+  margin: 0;
+}
+.cart-label {
+  display: block;
+  font-size: 12px;
+  color: var(--color-777777);
+  margin-bottom: 4px;
+}
+.cart-item .price {
+  font-size: 14px;
+  color: var(--color-1c1c1b);
+}
+
+/* quantity stepper */
+.qty {
+  display: inline-flex;
+  align-items: center;
+  background-color: white;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.qty button {
+  width: 32px;
+  height: 36px;
+  border: 0;
+  background: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.qty button:hover:not(:disabled) { background-color: var(--color-f5f5f7); }
+.qty button:disabled { opacity: 0.35; cursor: not-allowed; }
+.qty button:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: -2px;
+}
+.qty-value {
+  min-width: 30px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* delete button (real button = easy to tap) */
+.cart-remove {
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  color: #dc3545;
+  font-size: 18px;
+  cursor: pointer;
+}
+.cart-remove:hover:not(:disabled) { background-color: rgba(220, 53, 69, 0.1); }
+.cart-remove:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 1px;
+}
+.cart-remove:disabled { opacity: 0.4; }
+
+/* summary */
+.cart-summary {
+  background-color: white;
+  border-radius: 10px;
+  padding: 16px;
+}
+.cart-summary h4 { font-size: 17px; }
+.cart-summary p { font-size: 13px; color: var(--color-777777); }
+.cart-count { font-size: 13px; font-weight: 400; color: var(--color-777777); }
+
+/* full-width buttons on phones */
+.cart-btn { text-align: center; }
+@media (max-width: 767.98px) {
+  .cart-btn { display: block; width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cart-item { transition: none; }
+}
+
+/* ============ end cart ============ */
+
+
+/* ============================================================
+   CHECKOUT (responsive)
+   Paste at the END of your stylesheet. Nothing needs deleting:
+   your existing .total and .total-price rules are reused as they are.
+   (.min-w-0 is also defined in cart.css; keep just one copy.)
+   ============================================================ */
+
+.min-w-0 { min-width: 0; }
+
+.website-name {
+  font-size: 22px;
+  margin-bottom: 12px;
+}
+.website-name a:hover { color: var(--color-bf4800) !important; }
+
+/* progress steps: Cart / Information / Shipping / Payment */
+.checkout-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: var(--color-777777);
+}
+.checkout-steps li + li::before {
+  content: "/";
+  margin-right: 8px;
+}
+.checkout-steps a { color: var(--color-1c1c1b); }
+.checkout-steps a:hover { color: var(--color-bf4800); }
+.checkout-steps li.current {
+  color: var(--color-1c1c1b);
+  font-weight: 600;
+}
+
+/* form fields */
+.checkout-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--color-777777);
+}
+.checkout-left-data .form-control,
+.checkout-left-data .form-select {
+  min-height: 46px;
+  border-radius: 8px;
+}
+.checkout-left-data .form-control:focus,
+.checkout-left-data .form-select:focus {
+  box-shadow: 0 0 0 2px rgba(254, 189, 105, 0.5);
+  border-color: var(--color-febd69);
+}
+@media (max-width: 767.98px) {
+  /* stops iOS zooming into the page when a field is focused */
+  .checkout-left-data .form-control,
+  .checkout-left-data .form-select { font-size: 16px; }
+}
+
+/* buttons: stacked on phones (Continue first), side by side from 576px */
+.checkout-actions {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: stretch;
+  gap: 16px;
+  text-align: center;
+}
+.checkout-actions .button { width: 100%; }
+@media (min-width: 576px) {
+  .checkout-actions {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+  }
+  .checkout-actions .button { width: auto; }
+}
+
+/* order summary */
+.summary-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  background-color: white;
+  border: 0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--color-1c1c1b);
+  text-align: left;
+}
+.summary-toggle:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+.summary-chevron { transition: transform 0.2s ease; font-size: 12px; }
+.summary-chevron.open { transform: rotate(180deg); }
+
+.summary-panel {
+  background-color: white;
+  border-radius: 10px;
+  padding: 0 16px;
+  margin-top: 8px;
+}
+@media (min-width: 992px) {
+  .summary-panel {
+    background-color: transparent;
+    padding: 0;
+    margin-top: 0;
+  }
+  .checkout-summary { position: sticky; top: 20px; }
+}
+
+.order-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  background-color: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+.order-qty {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 1;
+  min-width: 22px;
+  font-size: 11px;
+}
+.order-title {
+  font-size: 14px;
+  line-height: 20px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summary-chevron { transition: none; }
+}
+
+/* ============ end checkout ============ */
+
+
+/* ============================================================
+   PAYMENT (responsive)
+   Paste at the END of your stylesheet, AFTER checkout.css
+   (it reuses .checkout-label, .order-thumb, .order-title and .min-w-0).
+   Nothing needs deleting.
+   ============================================================ */
+
+.payment-card {
+  background-color: white;
+  border-radius: 10px;
+  padding: 18px;
+}
+@media (min-width: 768px) {
+  .payment-card { padding: 28px; }
+}
+@media (min-width: 992px) {
+  .payment-summary { position: sticky; top: 20px; }
+}
+
+.payment-card .form-control {
+  min-height: 46px;
+  border-radius: 8px;
+}
+.payment-card .form-control:focus {
+  box-shadow: 0 0 0 2px rgba(254, 189, 105, 0.5);
+  border-color: var(--color-febd69);
+}
+@media (max-width: 767.98px) {
+  /* stops iOS zooming into the page when a field is focused */
+  .payment-card .form-control { font-size: 16px; }
+}
+
+.payment-ship {
+  font-size: 14px;
+  line-height: 22px;
+  word-break: break-word;
+}
+.payment-change {
+  display: inline;
+  margin-left: 6px;
+  color: var(--color-bf4800);
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+.payment-summary .order-thumb {
+  width: 48px;
+  height: 48px;
+}
+
+.payment-success-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #d1e7dd;
+  color: #198754;
+  font-size: 32px;
+  line-height: 1;
+}
+
+/* ============ end payment ============ */
+
+
+/* ============================================================
+   WISHLIST (responsive)
+   Paste at the END of your stylesheet. Nothing needs deleting:
+   your old ".wishlist-card .cross" rule is simply no longer used here
+   (the Compare page still uses it, so leave it in).
+   ============================================================ */
+
+.wishlist-card {
+  height: 100%;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
+}
+.wishlist-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+.wishlist-card.is-busy {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.wishlist-link {
+  display: block;
+  color: inherit;
+}
+.wishlist-link:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: -2px;
+}
+
+.wishlist-card-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  padding: 10px;
+}
+
+.wishlist-card-body {
+  padding: 4px 12px 14px;
+}
+@media (min-width: 768px) {
+  .wishlist-card-body { padding: 8px 16px 18px; }
+}
+.wishlist-card .title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;       /* keeps prices lined up across cards */
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+/* remove button: a visible circle so it stands out on any image, 36px tap target */
+.wishlist-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+.wishlist-remove img {
+  width: 16px;
+  height: 16px;
+}
+.wishlist-remove:hover:not(:disabled) { background-color: #fff; }
+.wishlist-remove:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wishlist-card { transition: none; }
+}
+
+/* ============ end wishlist ============ */
+
+
+/* ============================================================
+   BLOG PAGE (responsive)
+   The page reuses the category-filter styles from store.css
+   (.filter-card, .filter-sticky, .filter-toggle, .filter-chevron,
+   .filter-link), so paste store.css first. The BlogCard styles are
+   already in home.css. Nothing needs deleting.
+   ============================================================ */
+
+/* category filter items are <button>s here, not links: reset them to look like the store's links */
+.filter-link-btn {
+  width: 100%;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.filter-link-btn:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+
+/* ============ end blog ============ */
+
+/* ============================================================
+   CONTACT (responsive)
+
+   BEFORE PASTING, delete this old rule from your CSS:
+     .contact-inner-wrapper > div { width: 48%; }
+   (it forced two fixed-width columns on every screen size; the layout
+   is now handled by a Bootstrap row, and the safety override below
+   cancels it if you forget).
+   Then paste this at the END of your stylesheet.
+   ============================================================ */
+
+.contact-inner-wrapper {
+  padding: 20px 16px;
+  border-radius: 12px;
+  background-color: white;
+}
+@media (min-width: 768px) {
+  .contact-inner-wrapper { padding: 30px 28px; border-radius: 15px; }
+}
+.contact-inner-wrapper > div { width: auto; } /* safety override for the old 48% rule */
+
+.contact-title {
+  font-size: 20px;
+  line-height: 28px;
+}
+@media (min-width: 768px) {
+  .contact-title { font-size: 26px; line-height: 35px; }
+}
+
+/* map: shorter on phones, taller on bigger screens */
+.contact-map {
+  height: 260px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #e9e9e9;
+}
+.contact-map iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+@media (min-width: 768px) { .contact-map { height: 360px; } }
+@media (min-width: 992px) { .contact-map { height: 420px; } }
+
+/* form */
+.contact-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--color-777777);
+}
+.contact-inner-wrapper form .form-control { min-height: 46px; }
+.contact-inner-wrapper form textarea.form-control { min-height: 120px; resize: vertical; }
+.contact-inner-wrapper form .form-control:focus {
+  box-shadow: 0 0 0 2px rgba(254, 189, 105, 0.5);
+  border-color: var(--color-febd69);
+}
+.contact-inner-wrapper form .form-control.is-invalid { border-color: #dc3545; }
+@media (max-width: 767.98px) {
+  /* stops iOS zooming into the page when a field is focused */
+  .contact-inner-wrapper form .form-control { font-size: 16px; }
+}
+.contact-submit { width: 100%; }
+@media (min-width: 576px) {
+  .contact-submit { width: auto; }
+}
+
+/* contact details */
+.contact-details {
+  list-style: none;
+}
+.contact-details li {
+  display: flex;
+  align-items: flex-start;   /* icon stays at the top when text wraps */
+  gap: 15px;
+  margin-bottom: 16px;
+}
+.contact-details svg { margin-top: 2px; color: var(--color-1c1c1b); }
+.contact-details a,
+.contact-details address,
+.contact-details p {
+  word-break: break-word;    /* long emails never overflow on small phones */
+}
+.contact-details a { padding: 2px 0; }
+.contact-details a:hover { color: var(--color-bf4800); }
+
+/* ============ end contact ============ */
+
+
+
+/* ============================================================
+   COMPARE PRODUCTS (responsive)
+   Paste at the END of your stylesheet. Nothing needs deleting.
+   Your existing .compare-product-card, .product-detail,
+   h5.title and h6.price rules are reused as they are.
+   (Optional cleanup: the old ".compare-product-card .cross, .wishlist-card .cross"
+   rule is no longer used by either page now, so you can remove it.)
+   ============================================================ */
+
+/* ---------- layout ---------- */
+.compare-hint {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--color-777777);
+}
+
+/* phones + tablets: one scrolling row so products can be compared side by side */
+.compare-grid {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.compare-item {
+  flex: 0 0 78%;               /* next card peeks in so it's obvious you can swipe */
+  min-width: 0;
+  scroll-snap-align: start;
+}
+@media (min-width: 576px) {
+  .compare-item { flex-basis: calc(50% - 8px); }
+}
+@media (min-width: 768px) {
+  .compare-item { flex-basis: calc(33.333% - 11px); }
+}
+/* laptops: normal wrapping grid, 4 per row, no sideways scrolling */
+@media (min-width: 992px) {
+  .compare-grid { flex-wrap: wrap; overflow: visible; padding-bottom: 0; }
+  .compare-item { flex-basis: calc(25% - 12px); }
+}
+
+/* ---------- card ---------- */
+.product-card-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+.compare-product-details h5.title {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 3 * 22px;        /* equal height so the rows below line up between cards */
+  margin-top: 12px;
+  word-break: break-word;
+}
+.compare-product-card .product-detail h5 {
+  margin: 0;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.compare-product-card .product-detail p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-777777);
+  text-align: right;
+}
+
+/* ---------- remove button ---------- */
+.compare-remove {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+.compare-remove img {
+  width: 16px;
+  height: 16px;
+}
+.compare-remove:hover { background-color: #fff; }
+.compare-remove:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+
+/* ============ end compare ============ */
+
+
+/* ============================================================
+   SINGLE PRODUCT PAGE (responsive) + ACTION BUTTONS
+
+   BEFORE PASTING, delete this old rule from your CSS:
+     .main-product-image img {
+       width: 100% !important;
+       height: 600px !important;     <-- fixed 600px tall on every screen
+       object-fit: cover;
+     }
+   (the override below also wins over it, but removing it is cleaner).
+   Then paste this at the END of your stylesheet.
+   ============================================================ */
+
+/* ---------- main image ---------- */
+.main-product-image img {
+  display: block;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1;
+  max-height: 560px;
+  object-fit: contain;
+}
+
+/* ---------- thumbnails (scroll sideways if there are many) ---------- */
+.product-thumbs {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  padding-bottom: 6px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.product-thumb {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  padding: 4px;
+  background-color: white;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+}
+@media (min-width: 768px) {
+  .product-thumb { flex-basis: 76px; width: 76px; height: 76px; }
+}
+.product-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.product-thumb.active { border-color: var(--color-febd69); }
+.product-thumb:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+
+/* ---------- details ---------- */
+.main-product-details {
+  padding: 20px 16px;
+}
+@media (min-width: 768px) {
+  .main-product-details { padding: 30px 24px; }
+}
+.main-product-details h3.title {
+  font-size: 20px;
+  line-height: 28px;
+  word-break: break-word;
+}
+@media (min-width: 992px) {
+  .main-product-details h3.title { font-size: 24px; line-height: 32px; }
+}
+.main-product-details p.price {
+  font-size: 22px;
+  color: var(--color-bf4800);
+}
+.main-product-details .product-heading {
+  font-size: 14px;
+  margin: 0;
+}
+.main-product-details .product-data {
+  font-size: 14px;
+  color: var(--color-777777);
+}
+
+/* ---------- ACTION BUTTONS: Add to cart + Wishlist ---------- */
+.product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+.product-action-main,
+.product-wish-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.product-action-main {
+  flex: 1 1 200px;                 /* fills the row on phones */
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.product-action-main:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.product-action-main:disabled:hover {
+  background-color: var(--color-232f3e);   /* no hover colour when disabled */
+  color: white;
+}
+
+.product-wish-btn {
+  flex: 1 1 160px;
+  padding: 0 22px;
+  background-color: white;
+  color: var(--color-1c1c1b);
+  border: 1px solid #d0d0d0;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+.product-wish-btn:hover:not(:disabled) {
+  border-color: var(--color-bf4800);
+  color: var(--color-bf4800);
+}
+.product-wish-btn.active {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+.product-wish-btn:disabled { opacity: 0.6; cursor: wait; }
+.product-wish-btn:focus-visible,
+.product-action-main:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: 2px;
+}
+
+@media (min-width: 992px) {
+  /* laptops: keep the buttons their natural size, side by side */
+  .product-action-main,
+  .product-wish-btn { flex: 0 0 auto; }
+  .product-action-main { padding-left: 33px; padding-right: 33px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-wish-btn { transition: none; }
+}
+
+/* ---------- description + reviews ---------- */
+.description-wrapper h4,
+.reviews-wrapper h3 {
+  font-size: 20px;
+}
+@media (min-width: 768px) {
+  .description-wrapper h4,
+  .reviews-wrapper h3 { font-size: 26px; }
+}
+.review-inner-wrapper {
+  padding: 18px 16px;
+}
+@media (min-width: 768px) {
+  .review-inner-wrapper { padding: 30px; }
+}
+.review-head h4 { font-size: 16px; }          /* was 10px */
+.review-submit { width: 100%; }
+@media (min-width: 576px) {
+  .review-submit { width: auto; }
+}
+.review p { word-break: break-word; }
+
+/* ============ end single product ============ */
+
+
+/* ============================================================
+   AUTH PAGES (login now, signup / forgot-password next) – responsive
+
+   BEFORE PASTING, change this in your old .auth-card rule:
+       width: 500px;      <-- delete this line (fixed width = sideways
+                              scrolling on any phone narrower than 560px)
+   (the .auth-card below uses max-width instead, and overrides it anyway).
+   Then paste this at the END of your stylesheet.
+   ============================================================ */
+
+.auth-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 10px auto 30px;
+  padding: 20px 16px;
+  background-color: white;
+  border-radius: 10px;
+}
+@media (min-width: 576px) {
+  .auth-card { margin-top: 30px; padding: 28px 28px; }
+}
+
+.auth-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  color: var(--color-777777);
+}
+
+.auth-card .form-control:focus {
+  box-shadow: 0 0 0 2px rgba(254, 189, 105, 0.5);
+  border-color: var(--color-febd69);
+}
+.auth-card .form-control.is-invalid { border-color: #dc3545; }
+@media (max-width: 767.98px) {
+  /* stops iOS zooming into the page when a field is focused */
+  .auth-card .form-control { font-size: 16px; }
+}
+
+/* show / hide password */
+.password-field { position: relative; }
+.password-field .form-control { padding-right: 48px; }
+.password-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 50px;          /* same as the input */
+  background: none;
+  border: 0;
+  color: var(--color-777777);
+  font-size: 18px;
+  cursor: pointer;
+}
+.password-toggle:hover { color: var(--color-1c1c1b); }
+.password-toggle:focus-visible {
+  outline: 2px solid var(--color-febd69);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+.auth-forgot {
+  font-size: 14px;
+  padding: 4px 0;
+}
+.auth-forgot:hover { color: var(--color-bf4800); }
+
+/* Login + Signup buttons: share the row, wrap to full width on very small screens */
+.auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+.auth-actions .button {
+  flex: 1 1 140px;
+  text-align: center;
+}
+
+/* ============ end auth ============ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* home page starts here rotimi */
 .main-banner-content{
@@ -470,9 +2114,7 @@ width: 100%;
   background-color: white;
   gap: 15px;
 }
-.contact-inner-wrapper > div{
-  width: 48%;
-}
+
 .contact-title{
   font-size: 26px;
   font-weight: 500;
@@ -526,13 +2168,6 @@ width: 100%;
 
 
 /* auth card  starts here*/
-.auth-card {
-  padding: 20px;
-  background-color: white;
-  width: 500px;
-  margin: 30px auto;
-  border-radius: 10px;
-}
 .auth-card h3{
   font-size: 19px;
   font-weight: 500;
@@ -649,11 +2284,6 @@ color: var(--color-777777);
 /* When React sets showWelcome to false, opacity animates to 0 */
 .welcome-message[style*="display: none"] {
   opacity: 0;
-}
-.main-product-image img {
-  width: 100% !important;
-  height: 600px !important;
-  object-fit: cover;
 }
 
 .other-product-images {

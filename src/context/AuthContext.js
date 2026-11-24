@@ -3,6 +3,7 @@ import React, { useContext, createContext, useState, useEffect } from 'react';
 import { useCookies } from "react-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";
+import API_URL from "../config/app";
 
 export const  AuthContext = React.createContext({})
 
@@ -21,13 +22,15 @@ export const AuthProvider = ({ children }) => {
       }
       try {
         const { data } = await axios.post(
-          "http://localhost:5000/api/users/auth-status",
+          `${API_URL}/api/users/auth-status`,
           {},
-          { withCredentials: true }
+          { withCredentials: true },
         );
         const { status, user } = data;
         if (status) {
-          const fullUserRes = await axios.get(`http://localhost:5000/api/users/user/${user._id}`);
+          const fullUserRes = await axios.get(
+            `${API_URL}/api/users/user/${user._id}`,
+          );
           console.log(fullUserRes)
           setUser(fullUserRes.data);
           toast(`Welcome ${fullUserRes.data.username}`, { position: "top-right" });
@@ -48,9 +51,13 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post("http://localhost:5000/api/users/logout", {}, {
-        withCredentials: true, // include cookies
-      });
+      await axios.post(
+        `${API_URL}/api/users/logout`,
+        {},
+        {
+          withCredentials: true, // include cookies
+        },
+      );
   
       removeCookie("token"); // cleanup on client
       setUser(null);

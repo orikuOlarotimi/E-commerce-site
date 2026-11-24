@@ -1,21 +1,43 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React from "react";
+import { Link } from "react-router-dom";
 
-const BlogCard = () => {
+// Placeholder content used until you pass a real `post`
+const DEFAULT_POST = {
+  _id: null,
+  image: "/images/blog-1.jpg",
+  date: "5 MAY 2023",
+  title: "A BEAUTIFUL SUNDAY MORNING",
+  excerpt:
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+};
+
+const BlogCard = ({ post }) => {
+  const { _id, image, date, title, excerpt } = { ...DEFAULT_POST, ...post };
+
   return (
-         <div className='Blog-card'>
-            <div className='card-image'>
-                <img src='images/blog-1.jpg' className='img-fluid w-100' alt='blog'></img>
-            </div>
-               <div className='blog-content '>
-                     <p className='date'> 5, MAY, 2023</p>
-                     <h5 className='title'>A BEAUTIFUL SUNDAY MORNING</h5>
-                     <p className='desc'>lorem33ewjofwkefke        wiofjliqjfeje        dsds sdsdpwok fqle/fkewqflorem33</p>
-                     <Link className='button' to="/blog/:id"> READ MORE</Link>
-               </div>
+    <article className="Blog-card h-100 d-flex flex-column">
+      <div className="card-image">
+        <img
+          src={image}
+          className="img-fluid w-100"
+          alt={title}
+          loading="lazy"
+        />
+      </div>
+      <div className="blog-content d-flex flex-column flex-grow-1">
+        <p className="date">{date}</p>
+        <h5 className="title">{title}</h5>
+        <p className="desc">{excerpt}</p>
+        {/* Was "/blog/:id" (a literal string). Falls back to the blog list until posts have ids. */}
+        <Link
+          className="button mt-auto align-self-start"
+          to={_id ? `/blog/${_id}` : "/blogs"}
+        >
+          READ MORE
+        </Link>
+      </div>
+    </article>
+  );
+};
 
-         </div>
-  )
-}
-
-export default BlogCard
+export default BlogCard;

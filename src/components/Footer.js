@@ -1,134 +1,187 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import{ BsLinkedin,BsGithub,BsYoutube, BsInstagram} from 'react-icons/bs'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { BsLinkedin, BsGithub, BsYoutube, BsInstagram } from "react-icons/bs";
 
+// Keep content in data arrays so the JSX stays short and easy to edit
+const INFO_LINKS = [
+  { to: "/privacy-policy", label: "Privacy Policy" },
+  { to: "/refund-policy", label: "Refund Policy" },
+  { to: "/shipping-policy", label: "Shipping Policy" },
+  { to: "/term-conditions", label: "Terms & Conditions" },
+  { to: "/blogs", label: "Blogs" },
+];
+
+// TODO: make sure /about and /faq routes exist in your router
+const ACCOUNT_LINKS = [
+  { to: "/about", label: "About Us" },
+  { to: "/faq", label: "FAQ" },
+  { to: "/contact", label: "Contact" },
+];
+
+// Uses the search route your Header already handles
+const QUICK_LINKS = ["Laptops", "Headphones", "Tablets", "Watch"].map(
+  (name) => ({
+    to: `/product?search=${encodeURIComponent(name)}`,
+    label: name,
+  }),
+);
+
+// TODO: replace "#" with your real profile URLs
+const SOCIALS = [
+  { href: "#", label: "LinkedIn", Icon: BsLinkedin },
+  { href: "#", label: "Instagram", Icon: BsInstagram },
+  { href: "#", label: "GitHub", Icon: BsGithub },
+  { href: "#", label: "YouTube", Icon: BsYoutube },
+];
+
+const FooterLinks = ({ title, links }) => (
+  <>
+    <h4 className="footer-heading text-white">{title}</h4>
+    <nav className="footer-links d-flex flex-column" aria-label={title}>
+      {links.map((l) => (
+        <Link key={l.label} to={l.to} className="text-white">
+          {l.label}
+        </Link>
+      ))}
+    </nav>
+  </>
+);
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState(""); // '', 'success', 'error'
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+    if (!valid) {
+      setStatus("error");
+      return;
+    }
+    // TODO: call your newsletter endpoint here, e.g. axios.post('/api/newsletter', { email })
+    setStatus("success");
+    setEmail("");
+  };
+
   return (
     <>
+      {/* ============ 1. NEWSLETTER ============ */}
       <footer className="py-3">
         <div className="container-xxl">
-          <div className="row align-items-center">
-            <div className="col-5">
-              <div className="footer-top-data d-flex gap-30 align-items-center">
-                <img src="/images/newsletter.png" alt="newsletter"></img>
-                <h2 className="mb- text-white"> Sign Up For Newsletter</h2>
-              </div>
-            </div>
-            <div className="col-7">
-              <div className="input-group ">
-                <input
-                  type="text"
-                  className="form-control py-1"
-                  placeholder="Your Email Address"
-                  aria-label="Your Email Address"
-                  aria-describedby="basic-addon2"
+          <div className="row align-items-center gy-3">
+            <div className="col-12 col-md-5">
+              <div className="footer-top-data d-flex gap-15 gap-md-30 align-items-center">
+                <img
+                  src="/images/newsletter.png"
+                  alt=""
+                  className="footer-newsletter-img"
                 />
-                <span className="input-group-text p-2" id="basic-addon2">
-                  Subscibe
-                </span>
+                <h2 className="footer-newsletter-title mb-0 text-white">
+                  Sign up for our newsletter
+                </h2>
               </div>
+            </div>
+
+            <div className="col-12 col-md-7">
+              <form
+                className="input-group"
+                onSubmit={handleSubscribe}
+                noValidate
+              >
+                <input
+                  type="email"
+                  className="form-control py-2"
+                  placeholder="Your email address"
+                  aria-label="Your email address"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (status) setStatus("");
+                  }}
+                />
+                <button
+                  type="submit"
+                  className="input-group-text footer-subscribe p-2 px-3"
+                >
+                  Subscribe
+                </button>
+              </form>
+              {status === "success" && (
+                <p className="footer-msg text-success mb-0 mt-2" role="status">
+                  Thanks for subscribing!
+                </p>
+              )}
+              {status === "error" && (
+                <p className="footer-msg text-warning mb-0 mt-2" role="alert">
+                  Please enter a valid email address.
+                </p>
+              )}
             </div>
           </div>
         </div>
       </footer>
 
+      {/* ============ 2. MAIN LINKS ============ */}
       <footer className="py-4">
         <div className="container-xxl">
-          <div className="row">
-            <div className="col-4">
-              <h4 className="text-white mb-4">Contact Us</h4>
-              <div>
-                <address className="text-white">
-                  {" "}
-                  Hno : NEPA ESTATE, OGOODE,SAPELE, <br />
-                  DELTA STATE, NIGERIA. <br /> Pincode:{" "}
-                </address>
-                <a
-                  href="tel:+91 8265914234"
-                  className="mt-2 d-block mb-1 text-white"
-                >
-                  +91 8265914234
-                </a>
-                <a
-                  href="mail to:rotimipraise@gmail.com"
-                  className="mt-2 d-block mb-0 text-white"
-                >
-                  rotimipraise07@gmail.com
-                </a>
-                <div className="social_icons d-flex align-items-center gap-30">
-                  <a href="#">
-                    <BsLinkedin className="text-white fs-4" />
+          <div className="row gy-4">
+            <div className="col-12 col-lg-4">
+              <h4 className="footer-heading text-white">Contact us</h4>
+              <address className="text-white mb-2">
+                NEPA Estate, Ogoode, Sapele,
+                <br />
+                Delta State, Nigeria.
+              </address>
+              <a href="tel:+918265914234" className="d-block mb-2 text-white">
+                +91 8265914234
+              </a>
+              <a
+                href="mailto:rotimipraise07@gmail.com"
+                className="d-block mb-3 text-white footer-email"
+              >
+                rotimipraise07@gmail.com
+              </a>
+              <div className="social_icons d-flex align-items-center gap-3">
+                {SOCIALS.map(({ href, label, Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="footer-social"
+                  >
+                    <Icon className="text-white fs-4" />
                   </a>
-                  <a href="#">
-                    {" "}
-                    <BsInstagram className="text-white fs-4" />
-                  </a>
-                  <a href="#">
-                    {" "}
-                    <BsGithub className="text-white fs-4" />
-                  </a>
-                  <a href="#">
-                    {" "}
-                    <BsYoutube className="text-white fs-4" />
-                  </a>
-                </div>
+                ))}
               </div>
             </div>
-            <div className="col-3">
-              <h4 className="text-white mb-4">Information</h4>
-              <div className="footer-links d-flex flex-column">
-                <Link to="/privacy-policy" className="text-white py-2 mb-1">
-                  Privacy Policy
-                </Link>
-                <Link to="/refund-policy" className="text-white py-2 mb-1">
-                  Refund Policy
-                </Link>
-                <Link to="/shipping-policy" className="text-white py-2 mb-1">
-                  Shipping Policy
-                </Link>
-                <Link to="/term-conditions" className="text-white py-2 mb-1">
-                  Terms & Conditions
-                </Link>
-                <Link to="/" className="text-white py-2 mb-1">
-                  Blogs
-                </Link>
-              </div>
+
+            <div className="col-6 col-md-4 col-lg-3">
+              <FooterLinks title="Information" links={INFO_LINKS} />
             </div>
-            <div className="col-3">
-              <h4 className="text-white mb-4">Account</h4>
-              <div className="footer-links d-flex flex-column">
-                <Link className="text-white py-2 mb-1">About Us</Link>
-                <Link className="text-white py-2 mb-1">Faq</Link>
-                <Link className="text-white py-2 mb-1">Contact</Link>
-              </div>
+
+            <div className="col-6 col-md-4 col-lg-3">
+              <FooterLinks title="Account" links={ACCOUNT_LINKS} />
             </div>
-            <div className="col-2">
-              <h4 className="text-white mb-4">Quick Links</h4>
-              <div className="footer-links d-flex flex-column">
-                <Link className="text-white py-2 mb-1"> Laptops</Link>
-                <Link className="text-white py-2 mb-1"> Headphones</Link>
-                <Link className="text-white py-2 mb-1">Tablets</Link>
-                <Link className="text-white py-2 mb-1">Watch</Link>
-              </div>
+
+            <div className="col-12 col-md-4 col-lg-2">
+              <FooterLinks title="Quick links" links={QUICK_LINKS} />
             </div>
           </div>
         </div>
       </footer>
 
-      <footer className="py-4">
+      {/* ============ 3. COPYRIGHT ============ */}
+      <footer className="py-3 py-md-4">
         <div className="container-xxl">
-          <div className="row">
-            <div className="col-12">
-              <p className="text-center mb-0 text-white">
-                &copy; {new Date().getFullYear()}; powered by Oriku Olarotimi{" "}
-              </p>
-            </div>
-          </div>
+          <p className="text-center mb-0 text-white footer-copy">
+            &copy; {new Date().getFullYear()} Powered by Oriku Olarotimi
+          </p>
         </div>
       </footer>
     </>
   );
-}
+};
 
-export default Footer
+export default Footer;

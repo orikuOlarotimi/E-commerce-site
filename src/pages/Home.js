@@ -1,327 +1,352 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import Marquee from "react-fast-marquee";
-import BlogCard from '../components/BlogCard';
-import ProductCard from '../components/ProductCard';
-import SpecialProduct from '../components/SpecialProduct';
+import BlogCard from "../components/BlogCard";
+import ProductCard from "../components/ProductCard";
+import SpecialProduct from "../components/SpecialProduct";
+import API_URL from "../config/app";
 
+// Move this to an env variable / shared config file before deploying
+
+/* ---------- static content ---------- */
+const SMALL_BANNERS = [
+  { img: "/images/catbanner-01.jpg", tag: "BEST SALE", title: "iPad S13+ Pro" },
+  {
+    img: "/images/catbanner-02.jpg",
+    tag: "NEW ARRIVAL",
+    title: "BUY IPAD AIR",
+  },
+  {
+    img: "/images/catbanner-03.jpg",
+    tag: "SUPERCHARGED FOR PROS.",
+    title: "iPad S13+ Pro",
+  },
+  {
+    img: "/images/catbanner-04.jpg",
+    tag: "SUPERCHARGED FOR PROS.",
+    title: "iPad S13+ Pro",
+  },
+];
+
+const SERVICES = [
+  {
+    img: "/images/service.png",
+    title: "Free Shipping",
+    text: "From all orders over $5",
+  },
+  {
+    img: "/images/service-02.png",
+    title: "Daily Surprise Offer",
+    text: "Save up to 25% off",
+  },
+  {
+    img: "/images/service-03.png",
+    title: "Support 24/7",
+    text: "Shop with an expert",
+  },
+  {
+    img: "/images/service-04.png",
+    title: "Affordable Prices",
+    text: "Get factory default price",
+  },
+  {
+    img: "/images/service-05.png",
+    title: "Secure Payments",
+    text: "100% protected payment",
+  },
+];
+
+const BRANDS = Array.from(
+  { length: 8 },
+  (_, i) => `/images/brand-0${i + 1}.png`,
+);
+
+// TODO: replace with real posts from your API, then pass each one as <BlogCard post={post} />
+const PLACEHOLDER_BLOGS = [1, 2, 3, 4];
+
+/* ---------- helpers ---------- */
+// One small hook per list: all requests run in parallel and each section
+// appears as soon as its own data arrives.
+const useList = (endpoint) => {
+  const [state, setState] = useState({ items: [], loading: true });
+
+  useEffect(() => {
+    const controller = new AbortController();
+    axios
+      .get(`${API_URL}/api/products/${endpoint}`, { signal: controller.signal })
+      .then((res) => {
+        setState({
+          items: Array.isArray(res.data) ? res.data : [],
+          loading: false,
+        });
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) return;
+        console.error(`Error fetching ${endpoint}:`, err);
+        setState({ items: [], loading: false });
+      });
+    return () => controller.abort();
+  }, [endpoint]);
+
+  return state;
+};
+
+const discounted = (p) =>
+  (Number(p.price) * (1 - (Number(p.discountPercentage) || 0) / 100)).toFixed(
+    2,
+  );
+
+const Spinner = () => (
+  <div className="text-center py-4">
+    <div className="spinner-border text-secondary" role="status">
+      <span className="visually-hidden">Loading...</span>
+    </div>
+  </div>
+);
+
+// Heading + content. Hides itself if the request finished with nothing to show.
+const Section = ({ title, className = "", list, children }) => {
+  if (!list.loading && list.items.length === 0) return null;
+  return (
+    <section className={`home-wrapper-2 py-4 py-md-5 ${className}`}>
+      <div className="container-xxl">
+        <div className="row">
+          <div className="col-12">
+            <h3 className="section-heading">{title}</h3>
+          </div>
+          {list.loading ? (
+            <div className="col-12">
+              <Spinner />
+            </div>
+          ) : (
+            children
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ---------- page ---------- */
 const Home = () => {
-  const [user, setUser] = useState(null);
-  const [showWelcome, setShowWelcome] = useState(false);
-  const [featured, setFeatured] = useState([]);
-  const [famousProducts, setFamousProducts] = useState([]);
-  const [specialProducts, setSpecialProducts] = useState([]);
-  const [popularProducts, setPopularProducts] = useState([]);
+  const [welcomeUser, setWelcomeUser] = useState(null);
 
-  const [categories, setCategories] = useState([]);
+  const categories = useList("categories");
+  const featured = useList("featured");
+  const famous = useList("famous");
+  const special = useList("special");
+  const popular = useList("popular");
 
+  // Welcome toast (was never rendered before, and the timer was ~16 minutes)
   useEffect(() => {
-    const storedUser = localStorage.getItem('customer');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setShowWelcome(true);
-
-      // Hide welcome after 2 seconds
-      const timer = setTimeout(() => {
-        setShowWelcome(false);
-        // Remove user from localStorage after hiding welcome
-        localStorage.removeItem('customer');
-      }, 1002500);
-
-      // Cleanup timeout if component unmounts
-      return () => clearTimeout(timer);
+    let stored = null;
+    try {
+      stored = JSON.parse(localStorage.getItem("customer"));
+    } catch {
+      stored = null;
     }
-  }, []);
+    if (!stored) return undefined;
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/products/categories'); // adjust if needed
-        setCategories(response.data);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    const fetchFeatured = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/products/featured');
-        setFeatured(res.data);
-      } catch (err) {
-        console.error('Error fetching featured products:', err);
-      }
-    };
-
-    fetchFeatured();
-  }, []);
-
-  useEffect(() => {
-    const fetchFamous = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/products/famous');
-        setFamousProducts(res.data);
-      } catch (err) {
-        console.error('Failed to fetch famous products:', err);
-      }
-    };
-
-    fetchFamous();
-  }, []);
-  useEffect(() => {
-    const fetchSpecialProducts = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/api/products/special');
-        setSpecialProducts(response.data);
-      } catch (error) {
-        console.error('Failed to fetch special products', error);
-      }
-    };
-
-    fetchSpecialProducts();
-  }, []);
-  useEffect(() => {
-    const fetchPopular = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/products/popular');
-        setPopularProducts(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchPopular();
+    setWelcomeUser(stored);
+    const timer = setTimeout(() => {
+      setWelcomeUser(null);
+      localStorage.removeItem("customer");
+    }, 3000);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <>
-      <section className='home-wrapper-1 py-5'>
-          <div className='container-xxl '>
-              <div className='row'>
-                  <div className='col-6'>
-                      <div className='main-banner position-relative p-3'>
-                          <img src='/images/main-banner-1.jpg' className='img-fluid rounded-3' alt='main banner'></img>
-                          <div className='main-banner-content position-absolute'>
-                              <h4>SUPERCHARGED FOR PROS.</h4>
-                              <h5>ipad S13+ Pro</h5>
-                              <p>From $999.00 or $41.62/mo.</p>
-                              <Link className='button'> BUY NOW</Link>
-                          </div>
-                      </div>
-                  </div>
-                  <div className='col-6'>
-                      <div className='d-flex flex-wrap gap-10 justify-content-between align-items-center'>
-                           <div className='small-banner position-relative '>
-                          <img src='/images/catbanner-01.jpg' className='img-fluid rounded-3' alt='main banner'></img>
-                          <div className='small-banner-content position-absolute'>
-                              <h4>BEST SALE</h4>
-                              <h5>ipad S13+ Pro</h5>
-                              <p>From $999.00 <br/>or $41.62/mo.</p>
-                          </div>
-                      </div>
-                        <div className='small-banner position-relative '>
-                          <img src='/images/catbanner-02.jpg' className='img-fluid rounded-3' alt='main banner'></img>
-                            <div className='small-banner-content position-absolute'>
-                              <h4>NEW ARRIVAL</h4>
-                              <h5>BUY IPAD AIR</h5>
-                              <p>From $999.00 <br/>or $41.62/mo.</p>
-                            </div>
-                       </div>
-                       <div className='small-banner position-relative '>
-                          <img src='/images/catbanner-03.jpg' className='img-fluid rounded-3' alt='main banner'></img>
-                          <div className='small-banner-content position-absolute'>
-                              <h4>SUPERCHARGED FOR PROS.</h4>
-                              <h5>ipad S13+ Pro</h5>
-                              <p>From $999.00 <br/>or $41.62/mo.</p>
-                          </div>
-                      </div>
-                             <div className='small-banner position-relative '>
-                          <img src='/images/catbanner-04.jpg' className='img-fluid rounded-3' alt='main banner'></img>
-                          <div className='small-banner-content position-absolute'>
-                              <h4>SUPERCHARGED FOR PROS.</h4>
-                              <h5>ipad S13+ Pro</h5>
-                              <p>From $999.00 <br/>or $41.62/mo.</p>
-                          </div>
-                      </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </section>
+      {welcomeUser && (
+        <div className="welcome-message" role="status">
+          Welcome{welcomeUser.name ? `, ${welcomeUser.name}` : ""}!
+        </div>
+      )}
 
-      <section className='home-wrapper-2 py-5'>
-        <div className='container-xxl'>
-            <div className='row'>
-                <div className='col-12'>
-                    <div className='services d-flex align-items-center justify-content-between'>
-                        <div className="d-flex align-items-center gap-15">
-                           <img src='/images/service.png' alt='service'></img>
-                           <div><h6>Free Shipping</h6>
-                          <p className="mb-0" >From all Orders over $5</p></div>
-                        </div>
-
-                        <div className="d-flex align-items-center gap-15">
-                           <img src='/images/service-02.png' alt='services'></img>
-                          <div > <h6>Daily Surprise Offer</h6>
-                          <p className="mb-0" >Save Upto 25% off</p></div>  
-                        </div>
-                        <div className="d-flex align-items-center gap-15">
-                          <img src='/images/service-03.png' alt='services'></img>
-                          <div> <h6>Support 24/</h6>
-                          <p className="mb-0" >Shop with an expert</p></div> 
-                        </div>
-                        <div className="d-flex align-items-center gap-15">
-                          <img src='/images/service-04.png' alt='services'></img>
-                          <div> <h6>Affordable Prices</h6>
-                          <p className="mb-0" > Get Factory Default Price</p> </div>
-                        </div>
-                        <div className="d-flex align-items-center gap-15">
-                           <img src='/images/service-05.png' alt='services'></img>
-                          <div > <h6> Secure Payments</h6>
-                          <p className="mb-0" >100% Protected Payment</p></div>
-                        </div>
-                    </div>
+      {/* ============ HERO ============ */}
+      <section className="home-wrapper-1 py-4 py-md-5">
+        <div className="container-xxl">
+          <div className="row gy-3">
+            <div className="col-12 col-lg-6">
+              <div className="main-banner position-relative p-0 p-md-2">
+                <img
+                  src="/images/main-banner-1.jpg"
+                  className="img-fluid rounded-3"
+                  alt=""
+                />
+                <div className="main-banner-content position-absolute">
+                  <h4>SUPERCHARGED FOR PROS.</h4>
+                  <h5>iPad S13+ Pro</h5>
+                  <p>From $999.00 or $41.62/mo.</p>
+                  <Link className="button" to="/product">
+                    BUY NOW
+                  </Link>
                 </div>
+              </div>
             </div>
+
+            <div className="col-12 col-lg-6">
+              <div className="d-flex flex-wrap gap-10 justify-content-between align-items-center">
+                {SMALL_BANNERS.map((b, i) => (
+                  <div className="small-banner position-relative" key={i}>
+                    <img src={b.img} className="img-fluid rounded-3" alt="" />
+                    <div className="small-banner-content position-absolute">
+                      <h4>{b.tag}</h4>
+                      <h5>{b.title}</h5>
+                      <p>
+                        From $999.00 <br />
+                        or $41.62/mo.
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className='home-wapper-2 py-5'>
-          <div className='container-xxl'>
-              <div className='row'>
-                  <div className='col-12'>
-                      <div className='categories d-flex justify-content-between align-items-center flex-wrap'>
-                      {categories.map((cat) => (
-                <div key={cat.id} className='d-flex gap-30 align-items-center '  >
+      {/* ============ SERVICES ============ */}
+      <section className="home-wrapper-2 py-4 py-md-5">
+        <div className="container-xxl">
+          <div className="services row g-3">
+            {SERVICES.map((s) => (
+              <div className="col-12 col-sm-6 col-md-4 col-xl" key={s.title}>
+                <div className="d-flex align-items-center gap-15">
+                  <img src={s.img} alt="" loading="lazy" />
+                  <div>
+                    <h6 className="mb-1">{s.title}</h6>
+                    <p className="mb-0">{s.text}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ CATEGORIES ============ */}
+      {categories.items.length > 0 && (
+        <section className="home-wrapper-2 py-4 py-md-5">
+          <div className="container-xxl">
+            <div className="categories">
+              {categories.items.map((cat) => (
+                <Link
+                  key={cat._id || cat.category}
+                  to={`/category/${encodeURIComponent(cat.category)}`}
+                  className="category-item"
+                >
                   <div>
                     <h6>{cat.category}</h6>
                     <p>{cat.count} Items</p>
                   </div>
-                  <img src={cat.image} alt={cat.category} style={{ width: '60px', height: '60px', objectFit: 'cover' }} />
+                  <img src={cat.image} alt="" loading="lazy" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ============ FEATURED ============ */}
+      <Section
+        title="Featured Collection"
+        className="featured-wrapper"
+        list={featured}
+      >
+        {featured.items.map((product) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
+      </Section>
+
+      {/* ============ SPECIAL DISCOUNTS ============ */}
+      <Section
+        title="Special Discounts"
+        className="famous-wrapper"
+        list={famous}
+      >
+        {famous.items.map((product) => (
+          <div className="col-12 col-md-6 col-lg-4 mb-3" key={product._id}>
+            <Link
+              to={`/product/${product._id}`}
+              className="famous-card d-block h-100"
+            >
+              <img
+                src={product.thumbnail}
+                alt={product.title}
+                className="img-fluid"
+                loading="lazy"
+              />
+              <div className="famous-content">
+                <h5 className="text-dark text-uppercase">{product.category}</h5>
+                <h6 className="text-dark">{product.title}</h6>
+                <p className="text-dark mb-0">
+                  Now from ${discounted(product)}
+                </p>
+              </div>
+            </Link>
+          </div>
+        ))}
+      </Section>
+
+      {/* ============ SPECIAL PRODUCTS ============ */}
+      <Section
+        title="Special Product"
+        className="special-wrapper"
+        list={special}
+      >
+        {special.items.map((product) => (
+          <SpecialProduct key={product._id} product={product} />
+        ))}
+      </Section>
+
+      {/* ============ POPULAR ============ */}
+      <Section
+        title="Our Popular Products"
+        className="popular-wrapper"
+        list={popular}
+      >
+        {popular.items.map((product) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
+      </Section>
+
+      {/* ============ BRANDS ============ */}
+      <section className="marque-wrapper home-wrapper-2 py-4 py-md-5">
+        <div className="container-xxl">
+          <div className="maquee-inner-wrapper card-wrapper">
+            <Marquee gradient={false} speed={40} pauseOnHover>
+              {BRANDS.map((src, i) => (
+                <div className="brand-item mx-3 mx-md-4" key={src}>
+                  <img
+                    src={src}
+                    alt={`Brand ${i + 1}`}
+                    className="img-fluid"
+                    loading="lazy"
+                  />
                 </div>
               ))}
-                      </div>
-                  </div>
-              </div>
+            </Marquee>
           </div>
-      </section>
-
-        <section className='featured-wrapper py-5 home-wrapper-2'>
-                  <div className='container-xxl'>
-                      <div className='row'>
-                        <div className='col-12'>
-                  <h3 className='section-heading'> Featued Collection</h3>
-                         </div>
-                         {featured.map((product) => (
-                            <ProductCard key={product._id} product={product} />
-                          ))}
-                     </div>
-                </div>
-      </section>
-
-      <section className='famous-wrapper py-5 home-wrapper-2'>
-      <div className='container-xxl'>
-          <div className='row'>
-            <h2>Special Discounts</h2>
-          {famousProducts.map((product, index) => {
-            const discountedPrice = (product.price * (1 - product.discountPercentage / 100)).toFixed(2);
-            return (
-              <div className='col-4' key={index}>
-                <div className='famous-card  '>
-                  <img src={product.thumbnail} alt={product.title} className='img-fluid' />
-                  <div className='famous-content '>
-                    <h5 className='text-dark text-uppercase'>{product.category}</h5>
-                    <h6 className='text-dark'>{product.title}</h6>
-                    <p className='text-dark'>
-                      Now from ${discountedPrice}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
         </div>
-      </div>
       </section>
 
-      <section className='special-wrapper py-5 home-wrapper-2'>
-          <div className='container-xxl'>
-              <div className='row'>
-                  <div className='col-12'>
-                  <h3 className='section-heading'> Special product</h3>
-                  </div>
+      {/* ============ BLOGS ============ */}
+      <section className="blog-wrapper home-wrapper-2 py-4 py-md-5">
+        <div className="container-xxl">
+          <h3 className="section-heading">Our Latest Blogs</h3>
+          <div className="row gy-3">
+            {PLACEHOLDER_BLOGS.map((id) => (
+              <div className="col-12 col-sm-6 col-lg-3" key={id}>
+                <BlogCard />
               </div>
-              <div className='row '>
-              {specialProducts.map(product => (
-                  <SpecialProduct key={product._id} product={product} />
-                ))}
-              </div>
+            ))}
           </div>
-      </section>
-
-         <section className='popular-wrapper py-5 home-wrapper-2'>
-          <div className='container-xxl'>
-              <div className='row'>
-                  <div className='col-12'>
-                  <h3 className='section-heading'>Our Popular Products</h3>
-                  </div>
-                  {popularProducts.map(product => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-              
-              </div>
-          </div>
-      </section>
-      <section className='marque-wrapper home-wrapper-2 py-5'>
-          <div className='container-xxl'>
-              <div className='row'>
-                  <div className='col-12'>
-                      <div className='maquee-inner-wrapper card-wrapper'>
-                          <Marquee className='d-flex' >
-                                 <div className='mx-4 w-25'><img src='/images/brand-01.png' alt='brand'></img> </div>
-                                 <div className='mx-4 w-25'><img src='/images/brand-02.png' alt='brand'></img> </div>
-                                 <div className='mx-4 w-25'><img src='/images/brand-03.png' alt='brand'></img> </div>
-                                 <div className='mx-4 w-25'><img src='/images/brand-04.png' alt='brand'></img> </div>
-                                 <div className='mx-4 w-25'><img src='/images/brand-05.png' alt='brand'></img> </div>
-                                 <div className='mx-4 w-25'><img src='/images/brand-06.png' alt='brand'></img> </div>
-                                 <div className='mx-4 w-25'><img src='/images/brand-07.png' alt='brand'></img> </div>
-                                 <div className='mx-4 w-25'><img src='/images/brand-08.png' alt='brand'></img> </div>
-                          </Marquee>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </section>
-      
-      <section className='blog-wrapper py-5 home-wrapper-2'>
-          <div className='container-xxl'>
-              <div className='row'>
-                <div className='col-12'>
-                  <h3 className='section-heading'> Our Latest Blogs</h3>
-                </div> 
-              </div>
-              <div className='row'>
-                <div className='col-3'> 
-                    <BlogCard></BlogCard>
-                </div>
-                 <div className='col-3'> 
-                    <BlogCard></BlogCard>
-                </div>
-                 <div className='col-3'> 
-                    <BlogCard></BlogCard>
-                </div>
-                 <div className='col-3'> 
-                    <BlogCard></BlogCard>
-                </div>
-              </div>
-          </div>
+        </div>
       </section>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

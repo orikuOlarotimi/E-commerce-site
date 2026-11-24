@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
+import API_URL from "../config/app";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -27,9 +28,9 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/users/signup',
+        `${API_URL}/api/users/signup`,
         formData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
        
         if (response.error) {
